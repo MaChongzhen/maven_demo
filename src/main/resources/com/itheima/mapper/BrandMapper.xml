@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- the namespace is unique in each distinct mapper  -->
+<mapper namespace="com.itheima.mapper.BrandMapper">
+    <!-- thanks to the alias defined in the mybatis configuration file,
+     we just need to write the class name in the resultType now(which is just the class name)
+     -->
+
+
+
+    <!--    sql fragmentation, Reduced code volume and maintenance costs, but not flexible&ndash;&gt;-->
+
+
+    <!--    <sql id="brandColumn">-->
+     <!--        id, brand_name, company_name , ordered, description , status-->
+<!--    </sql>-->
+
+
+<!--    <select id="selectAll" resultType="Brand">-->
+<!--select-->
+<!--    <include refid="brandColumn"/>-->
+<!--        from tb_brand;-->
+<!--    </select>-->
+
+
+    <!-- the names of getter and setter must be equal to the property -->
+    <resultMap id="brandresultMap" type="brand">
+        <!--
+        id: primary key mapping
+        result: other key mapping
+        -->
+            <result column="brand_name" property="brandName"/>
+        <result column="company_name" property="companyName"/>
+    </resultMap>
+
+
+
+    <!-- define the resultmap, and replace the resultType in the select with it-->
+
+
+    <select id="selectAll" resultMap="brandresultMap">
+        select * from tb_brand;
+
+    </select>
+    
+    
+    
+    <!--select by condition -->
+<!--    <select id="selectByCondition" resultMap="brandresultMap">-->
+<!--        select * from tb_brand-->
+<!--        where status = #{status}-->
+<!--        and brand_name like #{brandName}-->
+<!--        and company_name like #{companyName};-->
+<!--    </select>-->
+
+
+
+<!-- select by condition  dynamic version -->
+    <select id="selectByCondition" resultMap="brandresultMap">
+        select * from tb_brand
+                 <!-- 因为是判断数值，就不写sql里面字段的名称了，直接写对象类里面定义的 -->
+        where
+            <!-- 防止bug产生， 1 = 1解决了and的问题 -->
+            1 = 1
+
+            <if test="status!=null">
+                and status = #{status}
+            </if>
+
+        <if test="brandName != null and brandName != '' " >
+            and brand_name like #{brandName}
+          </if>
+          <if test="companyName != null and companyName != ''">
+              and company_name like #{companyName};
+          </if>
+    </select>
+
+
+
+<!-- 参数占位符：
+        1.#{} 将id替换为？，来放置sql injection
+        2.${} 拼sql
+
+        特殊字符处理：
+        1.转义字符
+        2.CDATA区
+ -->
+
+    <select id="selectById" resultMap="brandresultMap">
+            select * from tb_brand where id = #{id};
+
+    </select>
+
+
+<!-- useGeneratedkeys and keyproperty will preserve the primary key  -->
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_brand (brand_name, company_name, ordered, description, status)
+        VALUES(#{brandName}, #{companyName}, #{ordered}, #{description}, #{status});
+    </insert>
+
+
+
+<!--
+    动态就是： 如果 空，那么就不操作。
+
+-->
+
+    <update id="update">
+            update tb_brand
+            set
+                <if test="brandName != null and brandName != '' ">
+                    brand_name = #{brandName},
+                </if>
+
+        <if test="companyName != null and companyName != '' ">
+            company_name = #{companyName},
+        </if>
+
+        <if test="ordered != null ">
+            ordered = #{ordered},
+        </if>
+
+        <if test="description != null and description != '' ">
+            description = #{description},
+        </if>
+        <if test="status != null ">
+            status = #{status}
+        </if>
+            where
+                id = #{id};
+    </update>
+
+
+
+    <!-- delete one single piece of data -->
+
+    <delete id="deleteById">
+        delete from tb_brand where id = #{id};
+    </delete>
+
+
+<!-- 到时候根据遍历得出的数组的大小来生成对应数量的占位符，id数组中的元素都是id， seperator用来分割每两个
+     如果没有逗号就不符合语法，会报错
+ -->
+    <delete id="deleteByIds">
+        delete from tb_brand where id
+        in (
+            <foreach collection="array" item="id" separator=",">
+                #{id}
+            </foreach>
+                                       );
+    </delete>
+
+
+</mapper>
+
+    <!-- when creating this directory, we are not supposed to use '.',
+        only / can make sure this xml file is located at the same folder
+        with the class file of the same name
+     -->

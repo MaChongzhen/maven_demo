@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- the namespace is unique in each distinct mapper  -->
+<mapper namespace="com.itheima.mapper.UserMapper">
+    <!-- thanks to the alias defined in the mybatis configuration file,
+     we just need to write the class name in the resultType now(which is just the class name)
+     -->
+    <select id="selectAll" resultType="user">
+        select * from tb_User;
+    </select>
+    <select id="UserbyID" resultType="com.itheima.pojo.User">
+        select  *
+        from tb_user where id = #{id}
+    </select>
+</mapper>
+
+<!-- when creating this directory, we are not supposed to use '.',
+    only / can make sure this xml file is located at the same folder
+    with the class file of the same name
+ -->

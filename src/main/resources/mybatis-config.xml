@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--the tags are in  order -->
+
+    <!-- create an aliases for thr instances in the given package, and the
+     default name is the class name, ignoring the cases, and the package name can be omitted
+     -->
+<!--    <settings>-->
+<!--        <setting name="logImpl" value="STDOUT_LOGGING"/>-->
+<!--    </settings>-->
+
+    <typeAliases>
+        <package name="com.itheima.pojo"/>
+    </typeAliases>
+
+
+    <!-- configure environment information of linking database, can have many environments
+          change environment by changing default
+      -->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <!-- database connection information, same as the jdbc-->
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql:///mybatis?useSSl=false"/>
+                <property name="username" value="root"/>
+                <property name="password" value="11111111"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <!-- loading the sql mapping file-->
+<!--        <mapper resource="com/itheima/mapper/UserMapper.xml"/>-->
+
+        <!--c=scanning package in order to avoid duplicates codes in configuration -->
+        <!-- the package is the location where the mapper class configuration files are stored at -->
+        <package name="com.itheima.mapper"/>
+    </mappers>
+</configuration>
